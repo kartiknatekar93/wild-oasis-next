@@ -2,7 +2,6 @@ import { getCountries } from "@/app/_lib/data-service";
 
 async function SelectCountry({ defaultCountry, name, id, className }) {
   const countries = await getCountries();
-  console.log(countries);
 
   // Find default country's flag emoji using v5 schema (country.names.common and country.flag.emoji)
   const defaultFlag =

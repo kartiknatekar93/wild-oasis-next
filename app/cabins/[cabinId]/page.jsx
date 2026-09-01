@@ -2,14 +2,14 @@ import { getCabin, getCabins } from "@/app/_lib/data-service";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import TextExpander from "@/app/_components/TextExpander";
-import DateSelector from "@/app/_components/DateSelector";
-import ReservationForm from "@/app/_components/ReservationForm";
+import { Suspense } from "react";
+import Reservation from "@/app/_components/Reservation";
+import Spinner from "@/app/_components/Spinner";
 
 export async function generateStaticParams() {
   const cabins = await getCabins();
 
   const Id = cabins.map((cabin) => ({ cabinId: String(cabin.id) }));
-  console.log(Id);
   return Id;
 }
 
@@ -20,7 +20,7 @@ export default async function Page({ params }) {
     cabin;
 
   return (
-    <div className="max-w-6xl mx-auto mt-8">
+    <div className="max-w-[1400px] mx-auto mt-8">
       <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24 relative">
         <div className="scale-[1.15] -translate-x-3 ">
           <Image
@@ -66,13 +66,12 @@ export default async function Page({ params }) {
       </div>
 
       <div>
-        <h2 className="text-5xl font-semibold text-center">
-          Reserve today. Pay on arrival.
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {cabin.name} today. Pay on arrival.
         </h2>
-        <div className="flex min-h-[400px]">
-          <DateSelector />
-          <ReservationForm />
-        </div>
+        <Suspense fallback={<Spinner />}>
+          <Reservation cabin={cabin} />
+        </Suspense>
       </div>
     </div>
   );

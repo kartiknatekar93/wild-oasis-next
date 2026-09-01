@@ -1,11 +1,12 @@
 import { Suspense } from "react";
-import CabinList from "./CabinList";
 import Spinner from "@/app/_components/Spinner";
-
+import Cabin from "@/app/_components/Cabin";
 export const revalidate = 3600;
 
-export default function Page() {
+export default function Page({ searchParams }) {
   // CHANGE
+
+  const filter = searchParams.capacity;
 
   return (
     <div>
@@ -21,7 +22,7 @@ export default function Page() {
         Welcome to paradise.
       </p>
       <Suspense fallback={<Spinner />}>
-        <CabinList />
+        <Cabin filter={filter} />
       </Suspense>
     </div>
   );
