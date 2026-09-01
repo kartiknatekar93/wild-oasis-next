@@ -1,9 +1,15 @@
 import SelectCountry from "@/app/_components/SelectCountry";
+import { updateprofile } from "@/app/_lib/actions";
+import { auth } from "@/app/_lib/auth";
+import { getGuest } from "@/app/_lib/data-service";
 
-export default function Page() {
+export default async function Page() {
   // CHANGE
-  const countryFlag = "pt.jpg";
-  const nationality = "portugal";
+
+  const session = await auth();
+  const { countryFlag, nationality, nationalID } = await getGuest(
+    session.user.email,
+  );
 
   return (
     <div>
@@ -16,10 +22,14 @@ export default function Page() {
         faster and smoother. See you soon!
       </p>
 
-      <form className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+      <form
+        action={updateprofile}
+        className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
+      >
         <div className="space-y-2">
           <label>Full name</label>
           <input
+            defaultValue={session.user.name}
             disabled
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
           />
@@ -28,6 +38,7 @@ export default function Page() {
         <div className="space-y-2">
           <label>Email address</label>
           <input
+            defaultValue={session.user.email}
             disabled
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
           />
@@ -54,6 +65,7 @@ export default function Page() {
         <div className="space-y-2">
           <label htmlFor="nationalID">National ID number</label>
           <input
+            defaultValue={nationalID}
             name="nationalID"
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
           />
