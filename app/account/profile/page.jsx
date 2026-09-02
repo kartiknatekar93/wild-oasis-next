@@ -2,6 +2,7 @@ import SelectCountry from "@/app/_components/SelectCountry";
 import { updateprofile } from "@/app/_lib/actions";
 import { auth } from "@/app/_lib/auth";
 import { getGuest } from "@/app/_lib/data-service";
+import Button from "@/app/_components/SubmitButton";
 
 export default async function Page() {
   // CHANGE
@@ -16,12 +17,10 @@ export default async function Page() {
       <h2 className="font-semibold text-2xl text-accent-400 mb-4">
         Update your guest profile
       </h2>
-
       <p className="text-lg mb-8 text-primary-200">
         Providing the following information will make your check-in process
         faster and smoother. See you soon!
       </p>
-
       <form
         action={updateprofile}
         className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
@@ -70,13 +69,8 @@ export default async function Page() {
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
           />
         </div>
-
-        <div className="flex justify-end items-center gap-6">
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Update profile
-          </button>
-        </div>
       </form>
+      <Button pendingLabel="Updating...">Update Profile</Button>
     </div>
   );
 }
