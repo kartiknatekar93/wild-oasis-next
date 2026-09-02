@@ -69,8 +69,8 @@ export default async function Page() {
             className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
           />
         </div>
+        <Button pendingLabel="Updating...">Update Profile</Button>
       </form>
-      <Button pendingLabel="Updating...">Update Profile</Button>
     </div>
   );
 }
