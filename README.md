@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Wild Oasis: Guest Website
 
-## Getting Started
+The guest-facing side of The Wild Oasis. Visitors browse cabins, pick dates, and make and manage reservations.
 
-First, run the development server:
+**Live demo:** https://wild-oasis-next-ebon.vercel.app/  
+**Repo:** https://github.com/kartiknatekar93/wild-oasis-next
+
+
+
+## Features
+
+- Cabin listing with filtering by capacity
+- Cabin detail pages with a date-range picker that disables booked dates
+- Reservation creation, editing, and deletion
+- Guest account area with profile updates (protected routes)
+- Sign-in with Google
+- Loading, error, and not-found states per route
+
+## Tech stack
+
+| Area | Tools |
+|---|---|
+| Framework | Next.js (App Router) |
+| Rendering | Server Components, Server Actions |
+| Styling | Tailwind CSS |
+| Database | Supabase |
+| Auth | <NextAuth with Google / Supabase Auth, match what you built> |
+| Language | <JavaScript / TypeScript> |
+
+## How it works
+
+- **Server Components for data:** pages fetch from the database directly on the server, so no API layer is needed and secrets never reach the browser. Client Components are kept small and at the leaves, only where state or browser APIs are needed.
+- **Server Actions for mutations:** booking, updating a profile, and deleting a reservation run as Server Actions followed by `revalidatePath` to refresh the UI. Every action checks the session, validates input, and confirms the booking belongs to the user.
+- **Streaming:** `loading.js` and Suspense boundaries show fallbacks while slow sections load. `error.js` and `not-found.js` handle failures per route segment.
+- **Route protection:** middleware guards account routes, and sessions are checked again inside actions, since middleware alone is not enough.
+- **Date range across components:** a context provider in a small client wrapper shares the selection between the calendar and the reservation form.
+- **Dynamic routes:** cabin pages are generated with `generateStaticParams`, with metadata set per page and `next/image` for optimized images.
+- **Double-booking prevention:** booked dates are fetched on the server and disabled in the picker, and validated again in the action.
+
+## Design decisions and trade-offs
+
+- **Server vs Client Components:** less JavaScript and safe database access on the server, at the cost of no hooks or interactivity there.
+- **Server Actions vs API routes:** less boilerplate and colocated logic, but each action is a public endpoint and needs its own auth and validation. They are also harder to reuse from outside clients.
+- **Static generation for cabin pages:** fast and cheap, but data can go stale, so revalidation is needed.
+- **Caching:** powerful but the hardest part of Next.js to reason about, and it has changed between versions.
+- **Hosting on Vercel:** smoothest path for Next.js, with some vendor coupling.
+
+## Getting started
+
+```bash
+git clone <repo-url>
+cd wild-oasis-website
+npm install
+```
+
+Create a `.env.local` file:
+
+```
+SUPABASE_URL=<your-supabase-url>
+SUPABASE_KEY=<your-supabase-key>
+# add your auth variables here (for example Google client ID/secret and an auth secret)
+```
+
+Then:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | Run ESLint |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Possible improvements
 
-## Learn More
+- A database constraint to prevent overlapping bookings
+- Optimistic UI with `useOptimistic` for deleting reservations
+- Playwright tests for the booking flow
+- Server Action input validation with a schema library
+- Accessibility audit of the date picker
 
-To learn more about Next.js, take a look at the following resources:
+## Credits
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built while following a React and Next.js course, then extended with: <list what you changed or added>.
